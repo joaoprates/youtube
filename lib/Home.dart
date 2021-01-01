@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube/CustomSearchDelegate.dart';
 import 'package:youtube/telas/Biblioteca.dart';
 import 'package:youtube/telas/EmAlta.dart';
 import 'package:youtube/telas/Inicio.dart';
@@ -12,11 +13,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   int _indiceAtual = 0;
-  @override
+  String _result = "";
 
+  @override
   Widget build(BuildContext context) {
-    List<Widget> telas = [
-      Inicio(),
+
+      List<Widget> telas = [
+      Inicio( _result ),
       EmAlta(),
       Inscricao(),
       Biblioteca()
@@ -34,16 +37,21 @@ class _HomeState extends State<Home> {
           height: 22,
         ),
         actions: <Widget>[
+
           IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              String request = await showSearch(context: context, delegate: CustomSearchDelegate());
+              setState(() {
+                _result = request;
+              });
+            },
+          ),
+
+          /*IconButton(
             icon: Icon(Icons.videocam),
             onPressed: (){
               print("acao: videocam");
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: (){
-              print("acao: pesquisa");
             },
           ),
           IconButton(
@@ -51,13 +59,16 @@ class _HomeState extends State<Home> {
             onPressed: (){
               print("acao: conta");
             },
-          )
+          )*/
         ],
       ),
-      body: telas[_indiceAtual],
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: telas[_indiceAtual],
+      ),
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: _indiceAtual,
-          onTap: (indice){
+          onTap: ( indice ){
             setState(() {
               _indiceAtual = indice;
             });
